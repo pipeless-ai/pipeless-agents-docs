@@ -1,0 +1,66 @@
+---
+title: Getting Started
+description: Introduction to Pipeless, the open-source and production ready computer vision framework. Enjoy serverless development experience for embedded computer vision.
+---
+
+import { Callout } from 'nextra/components'
+import LinkButton from '@/components/LinkButton'
+
+# 👋🏼 Welcome to Pipeless Agents Documentation
+
+Pipeless Agents allows you to **automate tasks taking a real-time video stream as input**.
+
+You connect the video sources and we automatically create an actionable data stream representing what is happening on the video.
+
+There are a few concepts you need to know:
+
+1. **Video Sources**: a video source is basically where the video is read from. It can be almost any source such as RTSP streams, WebRTC, Twitch, Youtube Live, etc.
+1. **Filters**: A filter takes care of extracting a specific kind of data from the video stream. Some examples are object detectors, pose estimation, some custom event, etc. For each video source you select the filters you want to use to process that source.
+1. **Agents**: An agent receives the data stream extracted from the video using filters. You can think about an agent as a loop that iterates over the data obtained from the videos. You can implement your own agents by providing your git repository with its code. See the section about implementing the agent logic.
+1. **Projects**: Every project is associated with an agent and one or more video sources. Projects are just logical agrupations.
+
+## Getting started
+
+To create your first Pipeless Agent click on the `Create Project` button. Provide the following inputs:
+
+- **Name**: A name for your project
+- **Description**: An optional description for your project
+- **Repository URL**: This is the URL of the git repository where the agent code is hosted. You have the option to fork the example on GitHub so you can modify and update your agent behaviour just by pushing to your repository. IMPORTANT: if you do not provide a repository URL you will be running the example and you won't be able to update the agent behavior.
+
+Once created, inside the project page, click on `Add Pipeline` to provide a video source and the filters you want to use to process the video stream. Your agent will receive the data extracted by those filters.
+
+You can add as many pipelines as you need, and manage them independently, just go to each pipeline page to stop, restart or see the pipeline logs in case of error.
+
+### Customizing your agent
+
+To create your agent and thus be able to update its behaviour, you need to provide your own git repository when your create the project.
+
+<div className="flex gap-4 mt-4 items-center">
+  <p>Click on the button to fork the template:</p>
+  <LinkButton href="https://github.com/miguelaeh/agent-example/fork"
+    text="Fork the template"
+  />
+</div>
+
+Inside that repository create an `agent.py` file with the following content:
+
+```python filename="agent.py" copy
+from pipeless_agents_sdk.cloud import data_stream
+
+print(f"Ready! Add a pipeline to start receiving data!")
+for payload in data_stream:
+    print(f"New data received: {payload.value}")
+```
+
+And that's all! Now, it's your time to customize what you do with the data received inside the loop above, the limit is just your imagination.
+
+<Callout>Please note that the above code WILL NOT WORK LOCALLY. You must push it to your repository and reload your agent in the UI.</Callout>
+
+#### Adding dependencies to the agent
+
+In case you need to install some Python dependency simply create a `requirements.txt` file as you usually do and the agent will automatically load it. For example:
+
+```plain filename="requirements.txt" copy
+requests==2.26.0
+numpy==1.21.2
+```
